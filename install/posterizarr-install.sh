@@ -25,8 +25,8 @@ $STD apt-get install -y \
   python3-venv \
   fuse3 \
   libfuse2 \
-  libharfbuzz0b \
-  libfontconfig1
+  libpangocairo-1.0-0 \
+  libgomp1
 msg_ok "Installed Dependencies"
 
 # ─── ImageMagick 7 ───────────────────────────────────────────────────────────
