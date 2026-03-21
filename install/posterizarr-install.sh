@@ -23,7 +23,10 @@ $STD apt-get install -y \
   python3 \
   python3-pip \
   python3-venv \
-  libfuse2
+  fuse3 \
+  libfuse2 \
+  libharfbuzz0b \
+  libfontconfig1
 msg_ok "Installed Dependencies"
 
 # ─── ImageMagick 7 ───────────────────────────────────────────────────────────
