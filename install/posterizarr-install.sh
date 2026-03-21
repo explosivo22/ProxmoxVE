@@ -17,6 +17,7 @@ update_os
 # ─── Dependencies ─────────────────────────────────────────────────────────────
 msg_info "Installing Dependencies"
 $STD apt-get install -y \
+  git \
   jq \
   cron \
   python3 \
