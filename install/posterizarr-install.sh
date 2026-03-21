@@ -160,9 +160,7 @@ msg_ok "First-run initialization complete"
 msg_info "Installing Scheduled Cron Job"
 systemctl enable -q cron
 touch /var/log/posterizarr.log
-(crontab -l 2>/dev/null; \
-  echo "0 */2 * * * cd /opt/posterizarr && pwsh Posterizarr.ps1 >>/var/log/posterizarr.log 2>&1") \
-  | crontab -
+echo "0 */2 * * * cd /opt/posterizarr && pwsh Posterizarr.ps1 >>/var/log/posterizarr.log 2>&1" | crontab -
 msg_ok "Cron Job Installed (edit schedule with: crontab -e)"
 
 # ─── Cleanup ─────────────────────────────────────────────────────────────────
