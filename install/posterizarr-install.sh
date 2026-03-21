@@ -22,7 +22,8 @@ $STD apt-get install -y \
   cron \
   python3 \
   python3-pip \
-  python3-venv
+  python3-venv \
+  libfuse2
 msg_ok "Installed Dependencies"
 
 # ─── ImageMagick 7 ───────────────────────────────────────────────────────────
