@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/explosivo22/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: Brad (custom)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -47,10 +47,19 @@ function update_script() {
     if [[ -f /config/config.json ]]; then
       ln -sf /config/config.json /opt/posterizarr/config.json
     fi
-    cd /opt/posterizarr/webui || exit
-    $STD bash setup.sh || { msg_error "setup.sh failed"; exit; }
+    cd /opt/posterizarr/webui/backend || exit
+    if [[ ! -f requirements.txt ]]; then
+      msg_error "webui/backend/requirements.txt missing after update"
+      exit
+    fi
+    $STD python3 -m venv venv
+    $STD ./venv/bin/pip install --upgrade pip
+    $STD ./venv/bin/pip install -r requirements.txt
     cd /opt/posterizarr/webui/frontend || exit
-    $STD npm run build || { msg_error "npm build failed"; exit; }
+    $STD npm install || { msg_error "npm install failed"; exit; }
+    if npm run | grep -qE '^\s*build'; then
+      $STD npm run build || { msg_error "npm build failed"; exit; }
+    fi
     echo "${RELEASE}" >/opt/posterizarr_version.txt
     systemctl start posterizarr-backend
     msg_ok "Updated ${APP} to ${RELEASE}"

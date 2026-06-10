@@ -98,23 +98,32 @@ msg_ok "Directories Created"
 
 # ─── Web UI Setup ─────────────────────────────────────────────────────────────
 msg_info "Setting Up Web UI Backend (Python)"
-cd /opt/posterizarr/webui || exit 1
-if [[ -f setup.sh ]]; then
-  $STD bash setup.sh || { msg_error "setup.sh execution failed"; exit 1; }
-else
-  msg_error "webui/setup.sh not found"
+cd /opt/posterizarr/webui/backend || exit 1
+if [[ ! -f requirements.txt ]]; then
+  msg_error "webui/backend/requirements.txt not found"
   exit 1
 fi
+$STD python3 -m venv venv
+$STD ./venv/bin/pip install --upgrade pip
+$STD ./venv/bin/pip install -r requirements.txt
 msg_ok "Web UI Backend Dependencies Installed"
 
-msg_info "Building Web UI Frontend (Node.js)"
+msg_info "Installing Web UI Frontend Dependencies (npm)"
 cd /opt/posterizarr/webui/frontend || exit 1
-$STD npm run build
-if [[ ! -d /opt/posterizarr/webui/frontend/build && ! -d /opt/posterizarr/webui/frontend/dist ]]; then
-  msg_error "Frontend build failed — no build or dist directory found"
-  exit 1
+$STD npm install
+msg_ok "Frontend Dependencies Installed"
+
+msg_info "Building Web UI Frontend (Node.js)"
+if npm run | grep -qE '^\s*build'; then
+  $STD npm run build
+  if [[ ! -d /opt/posterizarr/webui/frontend/build && ! -d /opt/posterizarr/webui/frontend/dist ]]; then
+    msg_error "Frontend build failed — no build or dist directory found"
+    exit 1
+  fi
+  msg_ok "Frontend Built"
+else
+  msg_ok "Frontend has no build script — skipping"
 fi
-msg_ok "Frontend Built"
 
 # ─── systemd Service ─────────────────────────────────────────────────────────
 msg_info "Creating Service"
